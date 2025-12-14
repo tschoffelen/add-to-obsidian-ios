@@ -15,8 +15,7 @@ struct ContentView: View {
             Image("Add to Obsidian")
                 .resizable()
                 .frame(width: 120, height: 120)
-                .cornerRadius(26.4)
-
+          
             VStack(spacing: 12) {
                 Text("Add to Obsidian")
                     .font(.title)

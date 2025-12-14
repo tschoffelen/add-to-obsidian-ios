@@ -83,9 +83,16 @@ $0.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) }) {
        let isAppleMusic = urlString.contains("music.apple.com") ||
 urlString.contains("itunes.apple.com")
 
+       // Check if it's a YouTube URL
+       let isYouTube = urlString.contains("youtube.com") ||
+urlString.contains("youtu.be") ||
+urlString.contains("m.youtube.com")
+
        let markdown: String
        if isAppleMusic {
            markdown = "- Listening to 🎧 [\(title.replacingOccurrences(of: " – Apple Music", with: ""))](\(urlString))"
+       } else if isYouTube {
+           markdown = "- 📺 [\(title.replacingOccurrences(of: " - YouTube", with: ""))](\(urlString))"
        } else {
            markdown = "- [\(title)](\(urlString))"
        }

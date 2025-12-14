@@ -15,6 +15,12 @@ class WebPageTitleFetcher {
             return
         }
 
+        // Check if this is a YouTube URL and use oEmbed API
+        if isYouTubeURL(url) {
+            fetchYouTubeTitle(from: url, completion: completion)
+            return
+        }
+
         // Create a URL request with a timeout
         var request = URLRequest(url: url, timeoutInterval: 5.0)
         request.httpMethod = "GET"
@@ -32,6 +38,38 @@ class WebPageTitleFetcher {
 
             // Try to extract the title from the HTML
             let title = extractTitle(from: html)
+            completion(title)
+        }
+
+        task.resume()
+    }
+
+    private static func isYouTubeURL(_ url: URL) -> Bool {
+        let urlString = url.absoluteString.lowercased()
+        return urlString.contains("youtube.com") ||
+               urlString.contains("youtu.be") ||
+               urlString.contains("m.youtube.com")
+    }
+
+    private static func fetchYouTubeTitle(from url: URL, completion: @escaping (String?) -> Void) {
+        // Use YouTube's oEmbed API to get the video title
+        guard let encodedURL = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let oembedURL = URL(string: "https://www.youtube.com/oembed?url=\(encodedURL)&format=json") else {
+            completion(nil)
+            return
+        }
+
+        let request = URLRequest(url: oembedURL, timeoutInterval: 5.0)
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil,
+                  let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let title = json["title"] as? String else {
+                completion(nil)
+                return
+            }
+
             completion(title)
         }
 
