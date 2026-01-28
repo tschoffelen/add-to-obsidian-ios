@@ -122,7 +122,7 @@ urlString.contains("m.youtube.com")
 
        // Create the Obsidian URL
        let obsidianURLString =
-"obsidian://adv-uri?daily=true&mode=append&heading=Explore&data=\(encodedContent)"
+"obsidian://adv-uri?daily=true&mode=append&await-sync=true&heading=Explore&data=\(encodedContent)"
        
        print("URL: \(obsidianURLString)")
 
