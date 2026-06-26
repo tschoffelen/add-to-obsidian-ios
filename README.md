@@ -4,7 +4,7 @@ A simple iOS share extension that lets you quickly save links, articles, and mus
 
 ## Features
 
-- Share URLs from any iOS app to Obsidian
+- Share URLs from any app to Obsidian
 - Automatically fetches page titles for better context
 - Special formatting for Apple Music links
 - Appends to your daily note under an "Explore" heading
