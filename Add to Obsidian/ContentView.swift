@@ -51,13 +51,21 @@ struct ContentView: View {
                 }
             }
             .padding(24)
-            .background(Color(.systemGray6))
+            .background(cardBackground)
             .cornerRadius(12)
             .padding(.horizontal, 32)
 
             Spacer()
         }
         .padding()
+    }
+
+    private var cardBackground: Color {
+#if os(macOS)
+        Color(nsColor: .controlBackgroundColor)
+#else
+        Color(.systemGray6)
+#endif
     }
 }
 

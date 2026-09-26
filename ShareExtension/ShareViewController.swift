@@ -5,14 +5,46 @@
 //  Created by Thomas Schoffelen on 01/12/2025.
 //
 
+#if os(macOS)
+import AppKit
+typealias PlatformViewController = NSViewController
+#else
 import UIKit
+typealias PlatformViewController = UIViewController
+#endif
 import Social
 import UniformTypeIdentifiers
 
-class ShareViewController: UIViewController {
+class ShareViewController: PlatformViewController {
+#if os(macOS)
+   override func loadView() {
+       view = NSView(frame: NSRect(x: 0, y: 0, width: 240, height: 80))
+   }
+#endif
+
    override func viewDidLoad() {
        super.viewDidLoad()
+       addStatusLabel()
        handleSharedContent()
+   }
+
+   private func addStatusLabel() {
+#if os(macOS)
+       let label = NSTextField(labelWithString: "Adding...")
+       label.font = .systemFont(ofSize: 17)
+       label.textColor = NSColor(displayP3Red: 0.502, green: 0.353, blue: 0.965, alpha: 1)
+#else
+       let label = UILabel()
+       label.text = "Adding..."
+       label.font = .systemFont(ofSize: 17)
+       label.textColor = UIColor(displayP3Red: 0.502, green: 0.353, blue: 0.965, alpha: 1)
+#endif
+       label.translatesAutoresizingMaskIntoConstraints = false
+       view.addSubview(label)
+       NSLayoutConstraint.activate([
+           label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+           label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+       ])
    }
 
    private func handleSharedContent() {
@@ -135,6 +167,9 @@ urlString.contains("m.youtube.com")
        DispatchQueue.main.async { [weak self] in
            guard let self = self else { return }
 
+#if os(macOS)
+           NSWorkspace.shared.open(obsidianURL)
+#else
            var responder = self as UIResponder?
 
            while responder != nil {
@@ -143,6 +178,7 @@ urlString.contains("m.youtube.com")
                }
                responder = responder!.next
            }
+#endif
 
            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                self.closeExtension()
